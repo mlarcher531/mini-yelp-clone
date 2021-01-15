@@ -1,31 +1,53 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import yelp from '../api/yelp'
 
 import SearchBar from '../components/SearchBar'
 import useYelpApi from '../hooks/useYelpApi'
+import RestaurantList from '../components/RestaurantList'
+
 
 const SearchScreen = () => {
 
     const [term, setTerm] = useState('')
     const [searchApi, results, errorMessage] = useYelpApi()
 
+    const filterResultsByPrice = (price) => {
+        return results.filter(result => {
+            return result.price === price
+        })
+    }
+
     return (
-        <View>
+        <>
             <SearchBar
                 term={term}
                 onTermChange={setTerm}
                 onTermSubmit={() => searchApi(term)}
             />
             {errorMessage ? <Text>{errorMessage}</Text> : null}
-            <Text>We have found {results.length} restaurants</Text>
-        </View>
+            <Text style={styles.margin} >We have found {results.length} restaurants</Text>
+            <ScrollView>
+                <RestaurantList
+                    title={'Cost Effective'}
+                    results={filterResultsByPrice('$')}
+                />
+                <RestaurantList
+                    title={'Bit Pricier'}
+                    results={filterResultsByPrice('$$')}
+                />
+                <RestaurantList
+                    title={'Big Spender'}
+                    results={filterResultsByPrice('$$$')}
+                />
+            </ScrollView>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
-    error: {
-
+    margin: {
+        marginLeft: 15
     }
 
 })
