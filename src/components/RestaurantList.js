@@ -6,6 +6,10 @@ import RestaurantDetail from './RestaurantDetails'
 
 const RestaurantList = ({ title, results, navigation }) => {
 
+    if(!results.length) {
+        return null
+    }
+    
     return (
         <View style={styles.container}>
             <Text style={styles.titleStyle}>{title}</Text>
@@ -16,7 +20,7 @@ const RestaurantList = ({ title, results, navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => {
                     return (
-                        <TouchableOpacity onPress={() => { navigation.navigate('Images') }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('Images', {id: item.id}) }}>
                             <RestaurantDetail restaurant={item} />
                         </TouchableOpacity>
                     )
